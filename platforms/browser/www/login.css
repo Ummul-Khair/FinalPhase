@@ -1,0 +1,135 @@
+@import "https://fonts.googleapis.com/css?family=Calligraffitti";
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans|Josefin+Slab|Poiret+One');
+
+form{
+  margin: 50% 30% 50% 30%;
+}
+.col-md-4
+{
+  width: 400px;
+  height: 250px;
+}
+.firstsection
+{
+  height: 300px;
+  background-image:url("https://images.unsplash.com/photo-1516826989513-502b572b924e?ixlib=rb-0.3.5&s=b8b6e7cfd1b8a4d771d44fbc17311acc&auto=format&fit=crop&w=2100&q=80");
+  background-size: auto 100%;
+    
+  width: 100%;
+}
+.btn
+{
+  background-color: black;
+   margin-top: 30px;
+}
+.firstsection nav{
+  opacity: 1.5;
+  margin-bottom: 90px;
+   background-color: white;
+}
+
+.firstsection nav h1 {
+  text-align: left;
+  font-family: Calligraffitti;
+  font-weight: 800;
+  color: black;
+  margin-top: 30px;
+  margin-left: 15px;
+}
+.imagediv img{
+    min-height:100%;
+    min-width:100%;
+    height:auto;
+    width:auto;
+    position:absolute;
+    top:-100%; bottom:-100%;
+    left:-100%; right:-100%;
+    margin:auto;
+}
+
+li {
+  font-size: 20px;
+  position: top;
+  display: inline;
+  padding: 10px;
+  margin-top: 30px;
+  color: white;
+}
+.firstsection nav li {
+  font-size: 20px;
+  position: top;
+  display: inline;
+  padding: 10px;
+  margin-top: 30px;
+  color: white;
+}
+
+.fixed {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  border-top: 0;
+}
+a {
+  color: black;
+}
+
+ul {
+  text-align: right;
+  color: black;
+}
+.aboutSection{
+  position: relative;
+  overflow: hidden;
+  clear: both;
+  height: 900px;
+  width: 100%;
+  padding : 30px;
+  background-color: white;
+  font-size:  35px;
+  
+}
+tr
+{
+  font-size:  30px;
+}
+td{
+  font-size:  20px;
+}
+
+.aboutSection p
+{
+  font-family: Josefin Slab;
+  text-align: center;
+  
+}
+.statsSection{
+  position: relative;
+  overflow: hidden;
+  clear: both;
+  height: 900px;
+  width: 100%;
+  padding : 30px;
+  font-family: Josefin Slab;
+  font-size: 40px;
+  text-align: center;
+}
+.likeSelection h1
+{
+  font-family: Josefin Slab;
+  font-size: 40px;
+  text-align: center;
+  margin-top: 60px;
+}
+h2{
+  color: black;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom:20px;
+  font-family: Josefin Slab;
+}
+
+
+

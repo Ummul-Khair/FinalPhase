@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LikeDislike</title>
+  <link rel="stylesheet" type="text/css" href="login.css"/>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> <script>
+
+var wsbroker = "broker.mqttdashboard.com";  //mqtt websocket enabled broker
+    var wsport = 8000 
+var   username = "";
+var authenticate = "";
+var client = new Paho.MQTT.Client(wsbroker, wsport,
+"myclientid_" + parseInt(Math.random() * 100, 10));
+client.onConnectionLost = function (responseObject) {
+console.log("connection lost: " + responseObject.errorMessage);
+};
+client.onMessageArrived = function (message) {
+
+if (message.destinationName == authenticate+'/verify')
+{
+  console.log(message.payloadString);
+	if(message.payloadString == 'true' && username != "")
+		window.location.href = "likedislike.html?"+username;
+	else if(message.payloadString != 'true')
+		 alert("Sorry your username or password is not valid please retry!");
+	}
+};
+
+
+var options = {
+timeout: 3,
+onSuccess: function () {
+console.log("mqtt connected");
+
+client.subscribe(username+'/bindata', {qos: 1});
+
+
+},
+onFailure: function (message) {
+console.log("Connection failed: " + message.errorMessage);
+
+}
+};
+
+client.connect(options);
+
+
+
+function checkLogin() {
+        var inputtedUsername = document.getElementById("user").value; 
+        var inputtedPassword = document.getElementById("pass").value; 
+        authenticate = inputtedUsername+ 'hgdfhjmfguysg93q7w7queiuoi^%£Y^&I^$££$' + inputtedPassword;
+        client.subscribe(authenticate+'/verify', {qos: 1});
+        message = new Paho.MQTT.Message(inputtedUsername + 'hgdfhjmfguysg93q7w7queiuoi^%£Y^&I^$££$' + inputtedPassword);
+        message.destinationName = "verifyuser";
+        client.send(message);
+        username = inputtedUsername;
+       //alert("Sorry your username or password is not valid please retry!");
+        document.getElementById("user").value = "";
+        document.getElementById("pass").value = "";
+    
+   
+ }
+
+</script>
+
+
+</head>
+
+<body>
+  <div class="login">
+    <form action = "http://127.0.0.1:3005/process_get" method = "GET">
+  Username <input type="text" id = "user" name="username"><br>
+  Password  <input type="text" id = "pass" name="password">
+  <a onclick = "checkLogin()" id = "likes" class="btn btn-info btn-lg">Log In</a>
+</form>
+    
+    </div>
+   </body>
+   </html>

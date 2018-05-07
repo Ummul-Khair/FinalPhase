@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LikeDislike</title>
+  <link rel="stylesheet" type="text/css" href="css.css"/>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> <script>
+var wsbroker = "broker.mqttdashboard.com";  //mqtt websocket enabled broker
+    var wsport = 8000 
+
+
+var qs = decodeURIComponent(window.location.search);
+
+var username = qs.substring(1);
+console.log(username);
+var client = new Paho.MQTT.Client(wsbroker, wsport,
+"myclientid_" + parseInt(Math.random() * 100, 10));
+client.onConnectionLost = function (responseObject) {
+console.log("connection lost: " + responseObject.errorMessage);
+};
+client.onMessageArrived = function (message) {
+  if(!(message.destinationName == username+'/bindata'))
+  {
+console.log(message.payloadString);
+}
+if(message.destinationName == 'notification')
+  $('#mqttnotification').append('<h3 style="font-weight:300; font-size: 20px;">'+message.payloadString+'</h3>');
+else if (message.destinationName == username+'/loc')
+  $("#locationvalue").text("Current Location: "+ message.payloadString);
+else if(message.destinationName == 'eb2likes/val')
+  $("#eb2likesvalue").text(message.payloadString);
+else if(message.destinationName == 'eb2dislikes/val')
+  $("#eb2dislikesvalue").text(message.payloadString);
+else if(message.destinationName == 'libic1likes/val')
+  $("#libic1likesvalue").text(message.payloadString);
+else if(message.destinationName == 'libic1dislikes/val') 
+  $("#libic1dislikesvalue").text(message.payloadString);
+else if(message.destinationName == username+'/bindata')
+{
+  
+  $('#imagediv').attr('src',"data:image/jpeg;base64,"+message.payloadString);
+}
+};
+
+
+var options = {
+timeout: 3,
+onSuccess: function () {
+console.log("mqtt connected");
+
+// Connection succeeded; subscribe to our topic, you can add multile lines of these
+client.subscribe('notification', {qos: 1});
+client.subscribe(username+'/loc', {qos: 1});
+client.subscribe('eb2likes/val', {qos: 1});
+client.subscribe('eb2dislikes/val', {qos: 1});
+client.subscribe('libic1likes/val', {qos: 1});
+client.subscribe('libic1dislikes/val', {qos: 1});
+client.subscribe(username+'/bindata', {qos: 1});
+
+},
+onFailure: function (message) {
+console.log("Connection failed: " + message.errorMessage);
+
+}
+};
+
+client.connect(options);
+
+
+
+$(document).ready(function(){ 
+
+
+$("#likes").click(function(){
+  if($("#locationvalue").text() == "Current Location: EB2 111")
+  {
+    message = new Paho.MQTT.Message("liked");
+        message.destinationName = "eb2111/likes";
+        client.send(message);
+  }
+  else if($("#locationvalue").text() == "Current Location: Library IC1")
+  {
+    message = new Paho.MQTT.Message("liked");
+        message.destinationName = "libraryic1/likes";
+        client.send(message);
+  }
+
+});
+
+$("#dislikes").click(function(){
+  console.log($("#locationvalue").text());
+  if($("#locationvalue").text() == "Current Location: EB2 111")
+  {
+    message = new Paho.MQTT.Message("disliked");
+        message.destinationName = "eb2111/dislikes";
+        client.send(message);
+  }
+  else if($("#locationvalue").text() == "Current Location: Library IC1")
+  {
+    message = new Paho.MQTT.Message("disliked");
+        message.destinationName = "libraryic1/dislikes";
+        client.send(message);
+  }
+
+});
+});
+
+ </script>
+
+
+</head>
+
+<body>
+  <div class="firstsection">
+    <nav>
+      <div class="row">
+        <div class="col-md-6">
+
+          <h1>Like Me || Dislike Me</h1>
+        </div>
+        <div class="col-md-6">
+          <ul>
+           
+            <li><a href= "#likeSelection" class="btn btn-info btn-lg">Like or Dislike</a></li>
+              <li><a href="#viewSelection" class="btn btn-info btn-lg" >View Statistics</a></li>
+            
+            </ul>
+            </div>
+        </div>
+         </nav>
+         </div>
+  
+          <a id ="aboutSection" ><div class = "aboutSection">
+          <div class="row">
+        <div class="col-md-6">
+          <p>Go to any room of your choice around campus and like or dislike depending on how it makes you feel. Check the statistics as well, to see how your fellow colleagues feel about different locations.</p>
+          </div>
+            
+            <div class="col-md-6"> 
+              </div>
+          </a>  
+            
+            
+            
+            
+            
+            
+           <a id ="likeSelection" > <div class="col-md-6">
+             <h1 id="locationvalue">Current Location: Library IC1</h1>
+              </div>
+             <div class="col-md-6">   
+             <ul>       
+            <li><a id = "likes" class="btn btn-info btn-lg">Like</a></li>
+                <li><a  id = "dislikes" class="btn btn-info btn-lg">Dislike</a></li>
+            </ul>            
+            </div></a>
+            </div>
+<img id = "imagediv"class="col-md-6">
+  
+
+        <!--- 
+        <div class="col-md-12">
+            <li><a href="http://localhost:3000/likes" id = "eb2111likes" target="_blank" class="btn btn-info btn-lg">EB1-111 Likes</a></li>
+                <li><a href="http://localhost:3000/dislikes" id = "ic1likes" target="_blank" class="btn btn-info btn-lg">Library IC1 Likes</a></li>
+                <li><a href="http://localhost:3000/location" id = "location" target="_blank" class="btn btn-info btn-lg">Library IC2 Likes</a></li>
+            </ul>
+        </div>
+     
+        </div>
+
+         -->   
+          </div>
+          
+  <a id ="viewSelection" ><div class = "statsSection">
+          <div class="row">
+        <div class="col-md-12">
+          <p>Show collected data</p>
+           
+           
+           <div class="col-md-12">   
+                        
+            </div>
+           <table style="width:100%">
+  <tr>
+    <th>Item/Location</th>
+    <th>Likes</th> 
+    <th>Dislikes</th>
+  </tr>
+  <tr>
+    <td>EB2 111</td>
+    <td id = 'eb2likesvalue'></td> 
+    <td id = 'eb2dislikesvalue'></td>
+  </tr>
+  <tr>
+    <td>Library IC1</td>
+    <td id = 'libic1likesvalue'></td> 
+    <td id = 'libic1dislikesvalue'></td>
+  </tr>
+</table>
+           <div id = "mqttnotification"class="col-md-6">
+            <p>Show recent activity</p>
+        
+           
+        </div>
+          </div>
+            
+          </div>
+            </a>
+          
+    </div>
+     
+   </body>
+   </html>
